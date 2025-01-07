@@ -33,3 +33,10 @@ export const  getByOption = async (query,option) => {
     const response = await fetch(`${baseURL}/get/${option}/${query}`);
     return response.json();
 }
+export const deleteCustomer = async (name) => {
+     const response = await fetch(`${baseURL}/delete/${name}`, {
+          method: 'DELETE',
+     });
+     if(!response.ok) throw new Error('Failed to delete customer');
+     return response.json();
+}

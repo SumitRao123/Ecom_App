@@ -1,46 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, TextInput, Select, Toast } from "flowbite-react";
-import { getByOption, getCustomers } from "../utilities/SaveData";
+import { getByOption, getCustomers,deleteCustomer } from "../utilities/SaveData";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-const customers = [
-  {
-    name: "John Doe",
-    fatherName: "Richard Doe",
-    phoneNumber: "9876543210",
-    dairyNo: 1,
-    pageNoInDairy: 15,
-    address: "123 Elm Street, Springfield",
-    amount: "$200",
-  },
-  {
-    name: "Jane Smith",
-    fatherName: "Michael Smith",
-    phoneNumber: "9123456780",
-    dairyNo: 2,
-    pageNoInDairy: 30,
-    address: "456 Oak Avenue, Shelbyville",
-    amount: "$350",
-  },
-  {
-    name: "Alice Johnson",
-    fatherName: "Robert Johnson",
-    phoneNumber: "9988776655",
-    dairyNo: 3,
-    pageNoInDairy: 45,
-    address: "789 Maple Drive, Ogdenville",
-    amount: "$400",
-  },
-  {
-    name: "Bob Williams",
-    fatherName: "Charles Williams",
-    phoneNumber: "8899776655",
-    dairyNo: 4,
-    pageNoInDairy: 60,
-    address: "101 Pine Lane, Capital City",
-    amount: "$1500000",
-  },
-];
 
 function CustomerList() {
   const [filterField, setFilterField] = useState("name");
@@ -65,16 +27,29 @@ function CustomerList() {
     console.log("Search Query: ", searchQuery);
     console.log("Filter Field: ", filterField);
     try {
-       
-    const data = await getByOption(searchQuery, filterField);
-    console.log("Filtered Data: ", data);
-    setFilteredData(data);
-    setSearchQuery(""); 
+      const data = await getByOption(searchQuery, filterField);
+      console.log("Filtered Data: ", data);
+      setFilteredData(data);
+      setSearchQuery("");
     } catch (error) {
       console.log("Error in getting the data", error);
-       toast.error("No Customer Found");
+      toast.error("No Customer Found");
     }
+  };
 
+  const handleDelete = async (customerName) => {
+    if (window.confirm(`Are you sure you want to delete ${customerName}?`)) {
+      try {
+        await deleteCustomer(customerName); // Call backend to delete the customer
+        setFilteredData((prevData) =>
+          prevData.filter((customer) => customer.name !== customerName)
+        ); // Update state to reflect deletion
+        toast.success("Customer deleted successfully");
+      } catch (error) {
+        console.log("Error deleting customer:", error);
+        toast.error("Failed to delete customer");
+      }
+    }
   };
 
   return (
@@ -102,10 +77,7 @@ function CustomerList() {
         >
           <option value="name">Name</option>
           <option value="fatherName">Father's Name</option>
-       
-         
           <option value="address">Address</option>
-       
         </Select>
         <Button onClick={handleSearch}>Search</Button>
       </div>
@@ -123,6 +95,9 @@ function CustomerList() {
             <Table.HeadCell>Amount</Table.HeadCell>
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Delete</span>
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
@@ -150,11 +125,19 @@ function CustomerList() {
                       Edit
                     </a>
                   </Table.Cell>
+                  <Table.Cell>
+                    <Button
+                      color="failure"
+                      onClick={() => handleDelete(customer.name)}
+                    >
+                      Delete
+                    </Button>
+                  </Table.Cell>
                 </Table.Row>
               ))
             ) : (
               <Table.Row>
-                <Table.Cell colSpan={8} className="text-center">
+                <Table.Cell colSpan={9} className="text-center">
                   No results found
                 </Table.Cell>
               </Table.Row>

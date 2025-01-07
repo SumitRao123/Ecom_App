@@ -70,5 +70,13 @@ public class RootController {
        return ResponseEntity.ok(customers);
     }
 
+    @DeleteMapping("/delete/{name}")
+    public boolean deleteCustomer(@PathVariable String name){
+          boolean flag = customerService.deleteRecord(name);
+          if(!flag) return false;
+          return true;
+    }
+
+
 
 }

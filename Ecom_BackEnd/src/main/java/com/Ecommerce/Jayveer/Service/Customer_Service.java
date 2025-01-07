@@ -53,6 +53,12 @@ public class Customer_Service {
             customerRepository.updateByName(name,updateCustomer);
             return updateCustomer;
       }
+      public boolean deleteRecord(String name){
+            List<Customer> customer = customerRepository.findByName(name);
+            if(customer.isEmpty()) return false;
+            customerRepository.delete(customer.get(0));
+            return true;
+      }
 
 
 }
