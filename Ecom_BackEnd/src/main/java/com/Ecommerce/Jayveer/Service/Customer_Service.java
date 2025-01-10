@@ -60,5 +60,8 @@ public class Customer_Service {
             return true;
       }
 
+      public  List<Customer> getByWord(String keyword){
+            return customerRepository.searchByWord(keyword);
+      }
 
 }

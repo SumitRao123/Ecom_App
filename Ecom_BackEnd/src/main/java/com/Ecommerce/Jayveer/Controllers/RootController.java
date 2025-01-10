@@ -55,16 +55,16 @@ public class RootController {
     @GetMapping("/get/{field}/{query}")
     public  ResponseEntity<?> getByOption(@PathVariable String query,@PathVariable String field){
 //        System.out.println(query + " " + field);
-        List<Customer> customers = new ArrayList<>();
-       if(field.equalsIgnoreCase("name")){
-            customers = customerService.fetchByName(query);
-       }
-       else if(field.equalsIgnoreCase("fatherName")){
-           customers = customerService.fetchByFatherName(query);
-       }
-       else if(field.equalsIgnoreCase("address")){
-             customers = customerService.fetchByAddress(query);
-       }
+        List<Customer> customers = customerService.getByWord(query);
+//       if(field.equalsIgnoreCase("name")){
+//            customers = customerService.fetchByName(query);
+//       }
+//       else if(field.equalsIgnoreCase("fatherName")){
+//           customers = customerService.fetchByFatherName(query);
+//       }
+//       else if(field.equalsIgnoreCase("address")){
+//             customers = customerService.fetchByAddress(query);
+//       }
        if(customers.isEmpty()) return ResponseEntity.badRequest().body("No Customer Found");
 
        return ResponseEntity.ok(customers);

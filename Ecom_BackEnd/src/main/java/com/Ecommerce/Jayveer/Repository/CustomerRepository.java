@@ -2,6 +2,7 @@ package com.Ecommerce.Jayveer.Repository;
 
 import com.Ecommerce.Jayveer.Entities.Customer;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface CustomerRepository extends MongoRepository<Customer, String>,Cu
     List<Customer> findByDairyNo(int dairyNo);
     List<Customer> findByPageNoInDairy(int pageNoInDairy);
     List<Customer> findByAddress(String address);
+    @Query("{ $or: [ { 'name': { $regex: ?0, $options: 'i' } }, { 'fatherName': { $regex: ?0, $options: 'i' } }, { 'address': { $regex: ?0, $options: 'i' } } ] }")
+    List<Customer> searchByWord(String keyword);
 
 
 }
