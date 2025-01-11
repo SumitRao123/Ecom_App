@@ -37,8 +37,9 @@ public class RootController {
 
     @GetMapping("/get/byname/{name}")
     public ResponseEntity<?> getByName(@PathVariable String name){
-         List<Customer> ls = customerService.fetchByName(name);
-
+//        System.out.println(name);
+        List<Customer> ls = customerService.fetchByName(name);
+//        System.out.println(ls);
          if(ls == null) return ResponseEntity.ok("No Customer with this found");
 
          return ResponseEntity.ok(ls);
@@ -46,7 +47,10 @@ public class RootController {
 
     @PutMapping("/update/{name}")
     public ResponseEntity<?>  updateByName(@PathVariable String name,@RequestBody CustomerData updatedCustomerData){
+
+
         Customer UpdatedCustomer = UtilityClass.conversion(updatedCustomerData);
+        System.out.println(UpdatedCustomer);
         Customer customer = customerService.UpdateCustomer(name, UpdatedCustomer);
 
           return ResponseEntity.ok(customer);
@@ -54,17 +58,9 @@ public class RootController {
 
     @GetMapping("/get/{field}/{query}")
     public  ResponseEntity<?> getByOption(@PathVariable String query,@PathVariable String field){
-//        System.out.println(query + " " + field);
+
         List<Customer> customers = customerService.getByWord(query);
-//       if(field.equalsIgnoreCase("name")){
-//            customers = customerService.fetchByName(query);
-//       }
-//       else if(field.equalsIgnoreCase("fatherName")){
-//           customers = customerService.fetchByFatherName(query);
-//       }
-//       else if(field.equalsIgnoreCase("address")){
-//             customers = customerService.fetchByAddress(query);
-//       }
+
        if(customers.isEmpty()) return ResponseEntity.badRequest().body("No Customer Found");
 
        return ResponseEntity.ok(customers);

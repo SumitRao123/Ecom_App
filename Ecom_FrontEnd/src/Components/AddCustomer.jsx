@@ -85,7 +85,7 @@ function AddCustomer() {
         <div className="mb-4 flex items-center">
           <label className="w-40 text-gray-700 font-bold">Dairy No:</label>
           <input
-            type="number"
+            type="text"
             name="dairyNo"
             value={formData.dairyNo}
             onChange={handleChange}
@@ -98,7 +98,7 @@ function AddCustomer() {
         <div className="mb-4 flex items-center">
           <label className="w-40 text-gray-700 font-bold">Page No in Dairy:</label>
           <input
-            type="number"
+            type="text"
             name="pageNoInDairy"
             value={formData.pageNoInDairy}
             onChange={handleChange}

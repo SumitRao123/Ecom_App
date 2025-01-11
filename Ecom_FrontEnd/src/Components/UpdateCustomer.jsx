@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 
 function UpdateCustomer() {
   let { name } = useParams(); // Assuming you're passing customer ID in the route
+  // console.log(name);
   name = name.replace(":", ""); // Remove the colon from the ID;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -19,9 +20,9 @@ function UpdateCustomer() {
 
   useEffect(() => {
     // Fetch customer details based on ID
+    // console.log(name);
     const fetchCustomerData = async () => {
       try {
-        console.log(name);
         const customerData = await getCustomer(name); // Fetch data
         console.log(customerData);
         setFormData(customerData[0]); // Set form data
@@ -101,7 +102,7 @@ function UpdateCustomer() {
         <div className="mb-4 flex items-center">
           <label className="w-40 text-gray-700 font-bold">Dairy No:</label>
           <input
-            type="number"
+            type="text"
             name="dairyNo"
             value={formData.dairyNo}
             onChange={handleChange}
@@ -114,7 +115,7 @@ function UpdateCustomer() {
         <div className="mb-4 flex items-center">
           <label className="w-40 text-gray-700 font-bold">Page No in Dairy:</label>
           <input
-            type="number"
+            type="text"
             name="pageNoInDairy"
             value={formData.pageNoInDairy}
             onChange={handleChange}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, TextInput, Select, Toast } from "flowbite-react";
-import { getByOption, getCustomers,deleteCustomer } from "../utilities/SaveData";
+import { Table, Button, TextInput, Select } from "flowbite-react";
+import { getByOption, getCustomers, deleteCustomer } from "../utilities/SaveData";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
@@ -40,10 +40,10 @@ function CustomerList() {
   const handleDelete = async (customerName) => {
     if (window.confirm(`Are you sure you want to delete ${customerName}?`)) {
       try {
-        await deleteCustomer(customerName); // Call backend to delete the customer
+        await deleteCustomer(customerName);
         setFilteredData((prevData) =>
           prevData.filter((customer) => customer.name !== customerName)
-        ); // Update state to reflect deletion
+        );
         toast.success("Customer deleted successfully");
       } catch (error) {
         console.log("Error deleting customer:", error);
@@ -53,8 +53,7 @@ function CustomerList() {
   };
 
   return (
-    <div className="p-4">
-      {/* Back Button */}
+    <div className="p-4 ">
       <Button
         className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => navigate("/")}
@@ -62,7 +61,6 @@ function CustomerList() {
         Back to Home
       </Button>
 
-      {/* Search Controls */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <TextInput
           placeholder="Search..."
@@ -82,9 +80,9 @@ function CustomerList() {
         <Button onClick={handleSearch}>Search</Button>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <Table striped>
+      {/* Responsive Table */}
+      <div className=" w-full overflow-x-hidden">
+        <Table className="w-full">
           <Table.Head>
             <Table.HeadCell>Name</Table.HeadCell>
             <Table.HeadCell>Father's Name</Table.HeadCell>

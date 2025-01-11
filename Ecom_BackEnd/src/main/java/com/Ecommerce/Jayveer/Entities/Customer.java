@@ -25,8 +25,8 @@ public class Customer {
      @JsonProperty("Phone_number")
      private String phoneNumber;
 
-     int dairyNo;
-     int pageNoInDairy;
+     String  dairyNo;
+     String  pageNoInDairy;
      String address;
      String amount;
 
@@ -57,20 +57,20 @@ public class Customer {
      }
 
      // Getter and Setter for 'dairyNo'
-     public int getDairyNo() {
+     public String getDairyNo() {
           return dairyNo;
      }
 
-     public void setDairyNo(int dairyNo) {
+     public void setDairyNo(String dairyNo) {
           this.dairyNo = dairyNo;
      }
 
      // Getter and Setter for 'pageNoInDairy'
-     public int getPageNoInDairy() {
+     public String  getPageNoInDairy() {
           return pageNoInDairy;
      }
 
-     public void setPageNoInDairy(int pageNoInDairy) {
+     public void setPageNoInDairy(String pageNoInDairy) {
           this.pageNoInDairy = pageNoInDairy;
      }
 
