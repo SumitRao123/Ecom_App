@@ -10,9 +10,9 @@ public class UtilityClass {
         customer.setName(customerData.getName().trim());
         customer.setFatherName(customerData.getFathername().trim());
         customer.setAddress(customerData.getAddress().trim());
-        customer.setDairyNo(customerData.getDairyNo());
+        customer.setDairyNo(customerData.getDairyNo().trim());
         customer.setPhoneNumber(customerData.getPhone_number());
-        customer.setPageNoInDairy(customerData.getPageNoInDairy());
+        customer.setPageNoInDairy(customerData.getPageNoInDairy().trim());
         customer.setAmount(customerData.getAmount());
         return customer;
     }

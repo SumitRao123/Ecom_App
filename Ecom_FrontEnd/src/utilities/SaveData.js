@@ -1,4 +1,4 @@
-export const baseURL =  "https://demo-deployment-latest-x2zi.onrender.com/App";
+export const baseURL =   "https://ecom-app-1eoc.onrender.com/App";
 // 'http://localhost:9091/App'
 console.log(baseURL);
 export const registerCustomer = async (customer) => {
