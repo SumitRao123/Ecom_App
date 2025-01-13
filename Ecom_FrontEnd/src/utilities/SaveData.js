@@ -1,5 +1,5 @@
-export const baseURL =   "https://ecom-app-1eoc.onrender.com/App";
-// 'http://localhost:9091/App'
+export const baseURL =  'http://localhost:9091/App' //  "https://ecom-app-1eoc.onrender.com/App";
+// 
 console.log(baseURL);
 export const registerCustomer = async (customer) => {
     const response = await fetch(`${baseURL}`, {
@@ -11,8 +11,8 @@ export const registerCustomer = async (customer) => {
     });
     return response.json();
 }
-export const getCustomers = async () => {
-    const response = await fetch(`${baseURL}/getAll`);
+export const getCustomers = async (pageNumber,pageSize) => {
+    const response = await fetch(`${baseURL}/getAll?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     return response.json();
 }
 

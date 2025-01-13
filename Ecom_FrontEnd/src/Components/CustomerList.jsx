@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, TextInput, Select } from "flowbite-react";
+import { Table, Button, TextInput, Select, Pagination } from "flowbite-react";
 import { getByOption, getCustomers, deleteCustomer } from "../utilities/SaveData";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
@@ -8,31 +8,35 @@ function CustomerList() {
   const [filterField, setFilterField] = useState("name");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Items to display per page
+  const [totalItems, setTotalItems] = useState(0); // Total items from the backend
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getAllCustomers = async () => {
-      try {
-        const data = await getCustomers();
-        console.log(data);
-        setFilteredData(data);
-      } catch (error) {
-        console.log("Error in getting the data", error);
-      }
-    };
-    getAllCustomers();
-  }, []);
+    fetchCustomers();
+  }, [currentPage, itemsPerPage]); // Re-fetch data when the page or items per page changes
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await getCustomers(currentPage, itemsPerPage);
+      console.log(response);
+      console.log(response.length)
+      setFilteredData(response);
+      setTotalItems(response.length); // Assuming the backend sends the total number of items
+    } catch (error) {
+      console.log("Error in fetching customers:", error);
+      toast.error("Failed to load customers");
+    }
+  };
 
   const handleSearch = async () => {
-    console.log("Search Query: ", searchQuery);
-    console.log("Filter Field: ", filterField);
     try {
       const data = await getByOption(searchQuery, filterField);
-      console.log("Filtered Data: ", data);
       setFilteredData(data);
       setSearchQuery("");
     } catch (error) {
-      console.log("Error in getting the data", error);
+      console.log("Error in searching data:", error);
       toast.error("No Customer Found");
     }
   };
@@ -41,9 +45,7 @@ function CustomerList() {
     if (window.confirm(`Are you sure you want to delete ${customerName}?`)) {
       try {
         await deleteCustomer(customerName);
-        setFilteredData((prevData) =>
-          prevData.filter((customer) => customer.name !== customerName)
-        );
+        fetchCustomers(); // Refresh the list after deletion
         toast.success("Customer deleted successfully");
       } catch (error) {
         console.log("Error deleting customer:", error);
@@ -51,9 +53,25 @@ function CustomerList() {
       }
     }
   };
+  function formatAmount(amount) {
+    // Convert the input to a number
+    const numericAmount = Number(amount);
+  
+    // Check if the conversion is successful
+    if (isNaN(numericAmount)) {
+      return "No amount"; // Handle invalid input gracefully
+    }
+  
+    // Format the number and append '/-'
+    const formattedAmount = new Intl.NumberFormat('en-IN').format(numericAmount);
+    return `${formattedAmount}/-`;
+  }
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const onPageChange = (page) => setCurrentPage(page);
 
   return (
-    <div className="p-4 ">
+    <div className="p-4">
       <Button
         className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => navigate("/")}
@@ -68,20 +86,11 @@ function CustomerList() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-1/3"
         />
-        <Select
-          value={filterField}
-          onChange={(e) => setFilterField(e.target.value)}
-          className="w-1/3"
-        >
-          <option value="name">Name</option>
-          <option value="fatherName">Father's Name</option>
-          <option value="address">Address</option>
-        </Select>
+      
         <Button onClick={handleSearch}>Search</Button>
       </div>
 
-      {/* Responsive Table */}
-      <div className=" w-full overflow-x-hidden">
+      <div className="w-full overflow-x-auto">
         <Table className="w-full">
           <Table.Head>
             <Table.HeadCell>Name</Table.HeadCell>
@@ -113,7 +122,7 @@ function CustomerList() {
                   <Table.Cell>{customer.dairyNo}</Table.Cell>
                   <Table.Cell>{customer.pageNoInDairy}</Table.Cell>
                   <Table.Cell>{customer.address}</Table.Cell>
-                  <Table.Cell>{customer.amount}</Table.Cell>
+                  <Table.Cell>{formatAmount(customer.amount)}</Table.Cell>
                   <Table.Cell>
                     <a
                       href="#"
@@ -142,6 +151,11 @@ function CustomerList() {
             )}
           </Table.Body>
         </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex overflow-x-auto sm:justify-center">
+      <Pagination currentPage={currentPage} totalPages={100} onPageChange={onPageChange} />
       </div>
     </div>
   );
