@@ -5,9 +5,13 @@ import com.Ecommerce.Jayveer.Repository.CustomerRepository;
 import com.Ecommerce.Jayveer.Utility.UtilityClass;
 import com.Ecommerce.Jayveer.payload.CustomerData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Customer_Service {
@@ -34,12 +38,17 @@ public class Customer_Service {
 
       }
 
-      public List<Customer> getAllCustomer(){
-            return customerRepository.findAll();
+      public List<Customer> getAllCustomer(Integer pageNumber,Integer pageSize){
+            Pageable p = PageRequest.of(pageNumber,pageSize);
+
+            Page<Customer> page = customerRepository.findAll(p);
+            List<Customer> ls  = page.getContent();
+            return ls;
       }
 
-      public  List<Customer> fetchByName(String name){
-             return customerRepository.findByName(name);
+      public  Customer fetchById(String id){
+
+            return customerRepository.findById(id).get();
       }
 
       public List<Customer> fetchByFatherName(String name){ return customerRepository.findByFatherName(name);}
@@ -49,19 +58,27 @@ public class Customer_Service {
       }
 
 
-      public  Customer UpdateCustomer(String name,Customer updateCustomer){
-            customerRepository.updateByName(name,updateCustomer);
+      public  Customer UpdateCustomer(String id,Customer updateCustomer){
+            Optional<Customer> customer = customerRepository.findById(id);
+            System.out.println(customer.get());
+            customerRepository.updateByName(customer.get().getName(),updateCustomer);
             return updateCustomer;
       }
-      public boolean deleteRecord(String name){
-            List<Customer> customer = customerRepository.findByName(name);
+      public boolean deleteRecord(String id){
+            Optional<Customer> customer = customerRepository.findById(id);
             if(customer.isEmpty()) return false;
-            customerRepository.delete(customer.get(0));
+            customerRepository.delete(customer.get());
             return true;
       }
 
-      public  List<Customer> getByWord(String keyword){
-            return customerRepository.searchByWord(keyword);
+      public  List<Customer> getByWord(String keyword,Integer pageNumber,Integer pageSize){
+            Pageable pg = PageRequest.of(pageNumber,pageSize);
+
+            Page<Customer> page = customerRepository.searchByWord(keyword,pg);
+            if(page.getContent().isEmpty()){
+                  return  customerRepository.searchByWord(keyword);
+            }
+            return page.getContent();
       }
 
 }

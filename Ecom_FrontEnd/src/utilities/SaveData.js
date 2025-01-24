@@ -1,4 +1,4 @@
-export const baseURL =  'http://localhost:9091/App' //  "https://ecom-app-1eoc.onrender.com/App";
+export const baseURL = 'http://localhost:9091/App' //"https://ecom-app-vrcd.onrender.com/App";
 // 
 console.log(baseURL);
 export const registerCustomer = async (customer) => {
@@ -16,13 +16,13 @@ export const getCustomers = async (pageNumber,pageSize) => {
     return response.json();
 }
 
-export const getCustomer = async (name) => {
-     console.log(name);
-    const response = await fetch(`${baseURL}/get/byname/${name}`);
+export const getCustomer = async (id) => {
+     console.log(id);
+    const response = await fetch(`${baseURL}/get/byId/${id}`);
     return response.json();
 }
-export const updateCustomer = async (name,customer) => {
-    const response = await fetch(`${baseURL}/update/${name}`, {
+export const updateCustomer = async (id,customer) => {
+    const response = await fetch(`${baseURL}/update/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -31,12 +31,12 @@ export const updateCustomer = async (name,customer) => {
     });
     return response.json();
 }
-export const  getByOption = async (query,option) => {
-    const response = await fetch(`${baseURL}/get/${option}/${query}`);
+export const  getByOption = async (query) => {
+    const response = await fetch(`${baseURL}/get/${query}`);
     return response.json();
 }
-export const deleteCustomer = async (name) => {
-     const response = await fetch(`${baseURL}/delete/${name}`, {
+export const deleteCustomer = async (id) => {
+     const response = await fetch(`${baseURL}/delete/${id}`, {
           method: 'DELETE',
      });
      if(!response.ok) throw new Error('Failed to delete customer');

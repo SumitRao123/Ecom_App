@@ -20,7 +20,7 @@ function CustomerList() {
   const fetchCustomers = async () => {
     try {
       const response = await getCustomers(currentPage, itemsPerPage);
-      console.log(response);
+      // console.log(response);
       console.log(response.length)
       setFilteredData(response);
       setTotalItems(response.length); // Assuming the backend sends the total number of items
@@ -32,8 +32,11 @@ function CustomerList() {
 
   const handleSearch = async () => {
     try {
-      const data = await getByOption(searchQuery, filterField);
+      console.log(searchQuery)
+      const data = await getByOption(searchQuery);
+      console.log(data);
       setFilteredData(data);
+      setTotalItems(data.length);
       setSearchQuery("");
     } catch (error) {
       console.log("Error in searching data:", error);
@@ -41,10 +44,11 @@ function CustomerList() {
     }
   };
 
-  const handleDelete = async (customerName) => {
-    if (window.confirm(`Are you sure you want to delete ${customerName}?`)) {
+  const handleDelete = async (customerid) => {
+   console.log(customerid);
+    if (window.confirm(`Are you sure you want to delete ${customerid}?`)) {
       try {
-        await deleteCustomer(customerName);
+        await deleteCustomer(customerid);
         fetchCustomers(); // Refresh the list after deletion
         toast.success("Customer deleted successfully");
       } catch (error) {
@@ -127,7 +131,7 @@ function CustomerList() {
                     <a
                       href="#"
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                      onClick={() => navigate(`/update/${customer.name}`)}
+                      onClick={() => navigate(`/update/${customer.id}`)}
                     >
                       Edit
                     </a>
@@ -135,7 +139,7 @@ function CustomerList() {
                   <Table.Cell>
                     <Button
                       color="failure"
-                      onClick={() => handleDelete(customer.name)}
+                      onClick={() => handleDelete(customer.id)}
                     >
                       Delete
                     </Button>
@@ -154,9 +158,11 @@ function CustomerList() {
       </div>
 
       {/* Pagination */}
+      {(filteredData.length >= 10) ? 
       <div className="flex overflow-x-auto sm:justify-center">
       <Pagination currentPage={currentPage} totalPages={100} onPageChange={onPageChange} />
-      </div>
+      </div>: null
+      }
     </div>
   );
 }

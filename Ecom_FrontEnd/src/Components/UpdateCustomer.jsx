@@ -4,10 +4,11 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 
 function UpdateCustomer() {
-  let { name } = useParams(); // Assuming you're passing customer ID in the route
+  let { id } = useParams(); // Assuming you're passing customer ID in the route
   // console.log(name);
-  name = name.replace(":", ""); // Remove the colon from the ID;
+  id = id.replace(":", ""); // Remove the colon from the ID;
   const navigate = useNavigate();
+  const [customerId,setCustomerId] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     Fathername: "",
@@ -23,9 +24,10 @@ function UpdateCustomer() {
     // console.log(name);
     const fetchCustomerData = async () => {
       try {
-        const customerData = await getCustomer(name); // Fetch data
+        const customerData = await getCustomer(id); // Fetch data
         console.log(customerData);
-        setFormData(customerData[0]); // Set form data
+        setCustomerId(customerData.id);
+        setFormData(customerData); // Set form data
       
       } catch (error) {
         console.error("Error fetching customer data:", error);
@@ -43,7 +45,7 @@ function UpdateCustomer() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateCustomer(name, formData); // Update customer data
+      await updateCustomer(customerId, formData); // Update customer data
       toast.success("Customer data has been updated successfully!");
       navigate("/"); // Navigate back to the customer list or another page
     } catch (error) {

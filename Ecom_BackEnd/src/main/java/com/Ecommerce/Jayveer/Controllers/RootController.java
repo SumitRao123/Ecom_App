@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/App")
@@ -29,48 +31,58 @@ public class RootController {
     }
 
     @GetMapping("/getAll")
-    public  ResponseEntity<?> getAllCustomers(){
-        List<Customer> ls = customerService.getAllCustomer();
+    public  ResponseEntity<?> getAllCustomers(@RequestParam(value= "pageNumber",defaultValue = "1",required = false) Integer pageNumber,
+                                              @RequestParam(value = "pageSize",defaultValue = "10",required = false) Integer pageSize){
+//        System.out.println(pageNumber + " " + pageSize);
+        List<Customer> ls = customerService.getAllCustomer(pageNumber,pageSize);
         if(ls == null) return ResponseEntity.ok("No Customers found");
         return ResponseEntity.ok(ls);
     }
 
-    @GetMapping("/get/byname/{name}")
-    public ResponseEntity<?> getByName(@PathVariable String name){
+    @GetMapping("/get/byId/{id}")
+    public ResponseEntity<?> getById(@PathVariable String id){
 //        System.out.println(name);
-        List<Customer> ls = customerService.fetchByName(name);
+        Customer ls = customerService.fetchById(id);
 //        System.out.println(ls);
          if(ls == null) return ResponseEntity.ok("No Customer with this found");
 
          return ResponseEntity.ok(ls);
     }
 
-    @PutMapping("/update/{name}")
-    public ResponseEntity<?>  updateByName(@PathVariable String name,@RequestBody CustomerData updatedCustomerData){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?>  updateByName(@PathVariable String id,@RequestBody CustomerData updatedCustomerData){
 
 
         Customer UpdatedCustomer = UtilityClass.conversion(updatedCustomerData);
-        System.out.println(UpdatedCustomer);
-        Customer customer = customerService.UpdateCustomer(name, UpdatedCustomer);
+//        System.out.println(UpdatedCustomer);
+//        UpdatedCustomer.setId(id);
+        Customer customer = customerService.UpdateCustomer(id, UpdatedCustomer);
 
           return ResponseEntity.ok(customer);
     }
 
-    @GetMapping("/get/{field}/{query}")
-    public  ResponseEntity<?> getByOption(@PathVariable String query,@PathVariable String field){
+    @GetMapping("/get/{query}")
+    public  ResponseEntity<?> getByOption(@PathVariable String query, @RequestParam(value= "pageNumber",defaultValue = "1",required = false) Integer pageNumber,
+                                          @RequestParam(value = "pageSize",defaultValue = "10",required = false) Integer pageSize){
 
-        List<Customer> customers = customerService.getByWord(query);
+        System.out.println(query);
+        List<Customer> customers = customerService.getByWord(query,pageNumber,pageSize);
 
        if(customers.isEmpty()) return ResponseEntity.badRequest().body("No Customer Found");
 
        return ResponseEntity.ok(customers);
     }
 
-    @DeleteMapping("/delete/{name}")
-    public boolean deleteCustomer(@PathVariable String name){
-          boolean flag = customerService.deleteRecord(name);
-          if(!flag) return false;
-          return true;
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable String id){
+          boolean flag = customerService.deleteRecord(id);
+          Map<String,String> mp = new HashMap<>();
+          if(!flag) {
+
+              return ResponseEntity.badRequest().body("Customer not Deleted");
+          }
+          mp.put("message","Customer Deleted Successfully");
+          return ResponseEntity.accepted().body(mp);
     }
 
 
